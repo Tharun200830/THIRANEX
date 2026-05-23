@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="Professional e-commerce product catalog - Full-stack deployment ready">
+    <meta name="theme-color" content="#3B82F6">
+    <title>ShopHub | Premium E-commerce Catalog</title>
+    
+    <!-- Preconnect to CDNs for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 (Free CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3B82F6;
+            border-radius: 4px;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        .product-info {
+            padding: 1.25rem;
+        }
+        .product-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3B82F6;
+            margin-bottom: 0.75rem;
+        }
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-link:hover {
+            color: #3B82F6;
+        }
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Cart Page */
+        .cart-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: right;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        /* Buttons */
+        .remove-btn {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .checkout-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+
+        /* Detail Page */
+        .detail-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .detail-image {
+            width: 100%;
+            border-radius: 12px;
+        }
+        @media (max-width: 768px) {
+            .detail-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- React and ReactDOM from CDN with production optimization -->
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <!-- React Router DOM -->
+    <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6.20.1/umd/react-router-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX (production build uses precompiled, but we'll use it for simplicity) -->
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel" data-presets="react">
+        // ---------- Mock Product Data (Optimized) ----------
+        const products = [
+            { id: 1, name: "Wireless Headphones", price: 99.99, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop", description: "Premium wireless headphones with noise cancellation and 30hr battery life." },
+            { id: 2, name: "Smart Watch", price: 199.99, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop", description: "Fitness tracker with heart rate monitor and GPS." },
+            { id: 3, name: "Premium Backpack", price: 79.99, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop", description: "Water-resistant laptop backpack with USB charging port." },
+            { id: 4, name: "Coffee Maker", price: 149.99, image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400&h=400&fit=crop", description: "Programmable coffee maker with thermal carafe." },
+            { id: 5, name: "Desk Lamp", price: 49.99, image: "https://images.unsplash.com/photo-1507473885765-e6a057befd1e?w=400&h=400&fit=crop", description: "LED desk lamp with adjustable brightness and color temperature." },
+            { id: 6, name: "Wireless Mouse", price: 29.99, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop", description: "Ergonomic wireless mouse with silent clicks." }
+        ];
+
+        // ---------- Cart Context ----------
+        const CartContext = React.createContext(null);
+
+        const CartProvider = ({ children }) => {
+            const [cart, setCart] = React.useState([]);
+
+            const addToCart = (product) => {
+                setCart(prevCart => {
+                    const existing = prevCart.find(item => item.id === product.id);
+                    if (existing) {
+                        return prevCart.map(item =>
+                            item.id === product.id 
+                                ? { ...item, quantity: item.quantity + 1 }
+                                : item
+                        );
+                    }
+                    return [...prevCart, { ...product, quantity: 1 }];
+                });
+            };
+
+            const removeFromCart = (productId) => {
+                setCart(prevCart => prevCart.filter(item => item.id !== productId));
+            };
+
+            const updateQuantity = (productId, quantity) => {
+                if (quantity <= 0) {
+                    removeFromCart(productId);
+                    return;
+                }
+                setCart(prevCart =>
+                    prevCart.map(item =>
+                        item.id === productId ? { ...item, quantity } : item
+                    )
+                );
+            };
+
+            const getCartTotal = () => {
+                return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            };
+
+            const getCartCount = () => {
+                return cart.reduce((count, item) => count + item.quantity, 0);
+            };
+
+            return (
+                <CartContext.Provider value={{ 
+                    cart, addToCart, removeFromCart, updateQuantity, 
+                    getCartTotal, getCartCount 
+                }}>
+                    {children}
+                </CartContext.Provider>
+            );
+        };
+
+        const useCart = () => React.useContext(CartContext);
+
+        // ---------- Components ----------
+        const Loader = () => (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+                <div className="loader"></div>
+            </div>
+        );
+
+        const Navbar = () => {
+            const { getCartCount } = useCart();
+            const navigate = ReactRouterDOM.useNavigate();
+            
+            return (
+                <nav className="navbar">
+                    <div className="nav-container">
+                        <div className="logo" onClick={() => navigate('/')}>
+                            <i className="fas fa-store" style={{ marginRight: '8px' }}></i>
+                            ShopHub
+                        </div>
+                        <div className="nav-links">
+                            <span className="nav-link" onClick={() => navigate('/')}>Home</span>
+                            <span className="nav-link" onClick={() => navigate('/shop')}>Shop</span>
+                            <div className="cart-icon" onClick={() => navigate('/cart')}>
+                                <i className="fas fa-shopping-cart"></i>
+                                <span className="cart-count">{getCartCount()}</span>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const ProductCard = ({ product }) => {
+            const { addToCart } = useCart();
+            const navigate = ReactRouterDOM.useNavigate();
+
+            return (
+                <div className="product-card">
+                    <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="product-image"
+                        loading="lazy"
+                        onClick={() => navigate(`/product/${product.id}`)}
+                    />
+                    <div className="product-info">
+                        <h3 className="product-title">{product.name}</h3>
+                        <div className="product-price">${product.price.toFixed(2)}</div>
+                        <button 
+                            className="add-to-cart-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                addToCart(product);
+                            }}
+                        >
+                            <i className="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const HomePage = () => {
+            const navigate = ReactRouterDOM.useNavigate();
+            const featured = products.slice(0, 3);
+            
+            return (
+                <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                    <h1 style={{ fontSize: '3rem', marginBottom: '1rem', background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
+                        Welcome to ShopHub
+                    </h1>
+                    <p style={{ fontSize: '1.25rem', color: '#4b5563', marginBottom: '2rem' }}>
+                        Premium products at unbeatable prices
+                    </p>
+                    <button 
+                        onClick={() => navigate('/shop')}
+                        style={{ padding: '1rem 2rem', fontSize: '1.125rem', background: '#3B82F6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                    >
+                        Shop Now <i className="fas fa-arrow-right"></i>
+                    </button>
+                    
+                    <div style={{ marginTop: '4rem' }}>
+                        <h2 style={{ marginBottom: '2rem' }}>Featured Products</h2>
+                        <div className="product-grid">
+                            {featured.map(product => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ShopPage = () => {
+            return (
+                <div className="product-grid">
+                    {products.map(product => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
+            );
+        };
+
+        const ProductDetailPage = () => {
+            const { id } = ReactRouterDOM.useParams();
+            const { addToCart } = useCart();
+            const navigate = ReactRouterDOM.useNavigate();
+            const product = products.find(p => p.id === parseInt(id));
+            
+            if (!product) return <div style={{ textAlign: 'center', padding: '4rem' }}>Product not found</div>;
+
+            return (
+                <div className="detail-container">
+                    <img src={product.image} alt={product.name} className="detail-image" />
+                    <div>
+                        <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{product.name}</h1>
+                        <p style={{ fontSize: '2rem', color: '#3B82F6', fontWeight: 'bold', marginBottom: '1rem' }}>
+                            ${product.price.toFixed(2)}
+                        </p>
+                        <p style={{ color: '#4b5563', marginBottom: '2rem', lineHeight: '1.6' }}>
+                            {product.description}
+                        </p>
+                        <button 
+                            className="add-to-cart-btn"
+                            onClick={() => {
+                                addToCart(product);
+                                navigate('/cart');
+                            }}
+                            style={{ width: 'auto', padding: '1rem 2rem' }}
+                        >
+                            Add to Cart <i className="fas fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const CartPage = () => {
+            const { cart, removeFromCart, updateQuantity, getCartTotal } = useCart();
+            const navigate = ReactRouterDOM.useNavigate();
+
+            if (cart.length === 0) {
+                return (
+                    <div className="cart-container" style={{ textAlign: 'center' }}>
+                        <i className="fas fa-shopping-cart" style={{ fontSize: '4rem', color: '#cbd5e1', marginBottom: '1rem' }}></i>
+                        <h2>Your cart is empty</h2>
+                        <button className="add-to-cart-btn" onClick={() => navigate('/shop')} style={{ marginTop: '1rem', width: 'auto', padding: '0.75rem 2rem' }}>
+                            Continue Shopping
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="cart-container">
+                    <h2 style={{ marginBottom: '2rem' }}>Your Cart</h2>
+                    {cart.map(item => (
+                        <div key={item.id} className="cart-item">
+                            <div style={{ flex: 2 }}>
+                                <h3>{item.name}</h3>
+                                <p>${item.price.toFixed(2)}</p>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <button 
+                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                    style={{ padding: '0.25rem 0.75rem', cursor: 'pointer' }}
+                                >
+                                    -
+                                </button>
+                                <span>{item.quantity}</span>
+                                <button 
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                    style={{ padding: '0.25rem 0.75rem', cursor: 'pointer' }}
+                                >
+                                    +
+                                </button>
+                                <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
+                                    <i className="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                    <div className="cart-total">
+                        Total: ${getCartTotal().toFixed(2)}
+                    </div>
+                    <button className="checkout-btn" onClick={() => alert('Checkout functionality coming soon!')}>
+                        Proceed to Checkout <i className="fas fa-credit-card"></i>
+                    </button>
+                </div>
+            );
+        };
+
+        // ---------- App with Routing ----------
+        const App = () => {
+            const { BrowserRouter, Routes, Route } = ReactRouterDOM;
+            
+            return (
+                <CartProvider>
+                    <BrowserRouter>
+                        <Navbar />
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/shop" element={<ShopPage />} />
+                            <Route path="/product/:id" element={<ProductDetailPage />} />
+                            <Route path="/cart" element={<CartPage />} />
+                        </Routes>
+                    </BrowserRouter>
+                </CartProvider>
+            );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
