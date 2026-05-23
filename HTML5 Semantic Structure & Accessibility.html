@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Alex Morgan | Accessible Portfolio - Frontend Developer</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Accessible portfolio of Alex Morgan, frontend developer specializing in semantic HTML, WCAG compliance, and inclusive design.">
+    <meta name="keywords" content="frontend developer, accessible web, semantic HTML, WCAG, portfolio, a11y">
+    <meta name="author" content="Alex Morgan">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.alexmorgan.dev">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Alex Morgan | Inclusive Frontend Developer">
+    <meta property="og:description" content="Building accessible, performant web experiences for everyone.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.alexmorgan.dev">
+    <meta property="og:image" content="https://www.alexmorgan.dev/og-portfolio.jpg">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Alex Morgan | Accessible Portfolio">
+    <meta name="twitter:description" content="Semantic HTML5, WCAG compliant, and user-first development.">
+    
+    <!-- Favicon (inline data uri for demo - pure HTML/CSS, no external assets) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231a2b4c'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='monospace'%3E⚡%3C/text%3E%3C/svg%3E">
+    
+    <style>
+        /* Global reset & focus styles for accessibility */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* High contrast, readable typography */
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #fbfcfd;
+            color: #111;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        /* Visible focus indicator for keyboard navigation (WCAG 2.1) */
+        :focus-visible {
+            outline: 3px solid #005fcc;
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* Skip to content link - hidden until focused */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #0a2b44;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 100;
+            transition: top 0.2s ease;
+        }
+
+        .skip-to-content:focus-visible {
+            top: 0;
+            outline: none;
+            background: #004080;
+        }
+
+        /* Layout components */
+        header {
+            background: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            list-style: none;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #1e3a5f;
+            padding: 0.5rem 0.25rem;
+            transition: color 0.2s, border-bottom 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover,
+        nav a:focus-visible {
+            color: #0b2b44;
+            border-bottom-color: #1e6fdf;
+        }
+
+        nav a[aria-current="page"] {
+            border-bottom-color: #1e6fdf;
+            font-weight: 700;
+            color: #0a2f4d;
+        }
+
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* generic sections */
+        section {
+            margin-bottom: 3.5rem;
+            scroll-margin-top: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            color: #0a2540;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #1e6fdf;
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #eef4ff 0%, #ffffff 100%);
+            padding: 2rem 2rem;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -5px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+            transition: transform 0.1s ease, box-shadow 0.2s;
+        }
+
+        .project-card:focus-within {
+            box-shadow: 0 0 0 3px #005fcc, 0 10px 20px -5px rgba(0,0,0,0.1);
+        }
+
+        .project-card h3 a {
+            text-decoration: none;
+            color: #1e3a5f;
+        }
+
+        .project-card h3 a:hover {
+            text-decoration: underline;
+        }
+
+        /* contact form styles - fully accessible */
+        .contact-form {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03), 0 0 0 1px #e9edf2;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f3a5f;
+        }
+
+        .required-indicator {
+            color: #c52828;
+            margin-left: 0.2rem;
+        }
+
+        input, textarea, button {
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            background: #fefefe;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #005fcc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 95, 204, 0.2);
+        }
+
+        button {
+            background: #1a4c8c;
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.05s;
+        }
+
+        button:hover,
+        button:focus-visible {
+            background: #0f3b6b;
+            outline: 2px solid #005fcc;
+            outline-offset: 2px;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .form-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .error-message {
+            color: #b91c1c;
+            background: #fee2e2;
+            border-left: 4px solid #b91c1c;
+            padding: 0.5rem 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            color: #0a5c2e;
+            background: #e0f2e9;
+            border-left: 4px solid #0a5c2e;
+        }
+
+        footer {
+            background: #0f172a;
+            color: #cbd5e6;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+            border-top: 1px solid #2d3a5e;
+        }
+
+        footer a {
+            color: #a5c9ff;
+            text-decoration: underline;
+        }
+
+        /* responsive adjustments */
+        @media (max-width: 700px) {
+            main {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            nav ul {
+                justify-content: center;
+                gap: 1.2rem;
+            }
+            .hero {
+                padding: 1.5rem;
+            }
+        }
+
+        /* high contrast mode improvements */
+        @media (prefers-contrast: high) {
+            body {
+                background: white;
+                color: black;
+            }
+            .hero {
+                background: #f0f0f0;
+                border: 2px solid black;
+            }
+            button {
+                background: black;
+                color: white;
+                border: 1px solid white;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SKIP TO MAIN CONTENT LINK (keyboard accessibility) -->
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<!-- MAIN HEADER with role banner and ARIA landmarks -->
+<header role="banner" aria-label="Site header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div aria-label="Logo and author name">
+            <span style="font-size: 1.6rem; font-weight: 700; color: #0f2c4e;">⚡ ALEX MORGAN</span>
+            <span style="display: block; font-size: 0.85rem; color: #2c5282;">frontend · accessibility · inclusive design</span>
+        </div>
+        <!-- PRIMARY NAVIGATION -->
+        <nav role="navigation" aria-label="Main navigation">
+            <ul>
+                <li><a href="index.html" aria-current="page">Home</a></li>
+                <li><a href="#projects" aria-label="View my projects">Projects</a></li>
+                <li><a href="#contact" aria-label="Contact section">Contact</a></li>
+                <li><a href="resume.html" aria-label="Resume page (simulated)">Resume</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- MAIN CONTENT with landmark role and id for skip link -->
+<main id="main-content" role="main" tabindex="-1">
+    
+    <!-- HERO SECTION (introduction) -->
+    <section aria-labelledby="hero-heading" class="hero">
+        <h1 id="hero-heading">Hi, I'm Alex Morgan 👋</h1>
+        <p style="font-size: 1.25rem; max-width: 700px;">I build <strong>semantic, accessible web experiences</strong> that work for everyone — from keyboard-only users to screen reader assistive technologies. WCAG compliant, high-performance, human-first.</p>
+        <div style="margin-top: 1.5rem;">
+            <a href="#contact" style="display: inline-block; background: #1e3a5f; color: white; padding: 0.7rem 1.8rem; border-radius: 40px; text-decoration: none; font-weight: 600;">Let's collaborate →</a>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION (semantic article listing) -->
+    <section id="projects" aria-labelledby="projects-heading">
+        <h2 id="projects-heading">Featured projects</h2>
+        <div class="project-grid">
+            
+            <article class="project-card" aria-labelledby="project1-title">
+                <h3 id="project1-title"><a href="#" aria-describedby="project1-desc">Accessible Component Library</a></h3>
+                <p id="project1-desc">A fully keyboard-navigable, ARIA-compliant React component library with focus management and screen reader announcements. WCAG 2.1 AA certified.</p>
+                <span aria-label="Technologies used: React, Jest-Axe, Storybook">⚛️ React · a11y · Storybook</span>
+            </article>
+            
+            <article class="project-card" aria-labelledby="project2-title">
+                <h3 id="project2-title"><a href="#" aria-describedby="project2-desc">Semantic HTML5 Blog Platform</a></h3>
+                <p id="project2-desc">Lightweight, responsive blog engine using only semantic tags, landmark roles, and optimized meta tags. Scores 100 on Lighthouse accessibility & SEO.</p>
+                <span aria-label="Technologies: HTML5, CSS Grid, vanilla JS">📄 HTML5 · CSS Grid · Performance</span>
+            </article>
+            
+            <article class="project-card" aria-labelledby="project3-title">
+                <h3 id="project3-title"><a href="#" aria-describedby="project3-desc">Inclusive Design System</a></h3>
+                <p id="project3-desc">Design tokens and component patterns prioritizing high contrast, reduced motion, and focus indicators. Used by 15+ enterprise teams.</p>
+                <span aria-label="Design tokens, CSS custom properties, automated a11y tests">🎨 CSS variables · WCAG · Storybook</span>
+            </article>
+        </div>
+    </section>
+    
+    <!-- ACCESSIBLE CONTACT FORM with ARIA labels, error handling, and tab-navigable controls -->
+    <section id="contact" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Get in touch</h2>
+        <div class="contact-form">
+            <form id="accessible-contact-form" method="post" action="#" novalidate aria-label="Contact form">
+                <!-- Name Field -->
+                <div class="form-group">
+                    <label for="fullname">
+                        Full name <span class="required-indicator" aria-hidden="true">*</span>
+                    </label>
+                    <input type="text" id="fullname" name="fullname" required aria-required="true" aria-describedby="name-error" placeholder="e.g., Taylor Smith">
+                    <div id="name-error" class="error-message" role="alert" aria-live="polite" style="display: none;"></div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">
+                        Email address <span class="required-indicator" aria-hidden="true">*</span>
+                    </label>
+                    <input type="email" id="email" name="email" required aria-required="true" aria-describedby="email-error" placeholder="hello@example.com">
+                    <div id="email-error" class="error-message" role="alert" aria-live="polite" style="display: none;"></div>
+                </div>
+
+                <!-- Message Field -->
+                <div class="form-group">
+                    <label for="message">
+                        Message <span class="required-indicator" aria-hidden="true">*</span>
+                    </label>
+                    <textarea id="message" name="message" rows="5" required aria-required="true" aria-describedby="message-error" placeholder="Tell me about your project or inquiry..."></textarea>
+                    <div id="message-error" class="error-message" role="alert" aria-live="polite" style="display: none;"></div>
+                </div>
+
+                <!-- Status messages container for screen readers -->
+                <div id="form-status" role="status" aria-live="polite" class="form-message" style="display: none;"></div>
+
+                <button type="submit" aria-label="Send contact message">Send message ✉️</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER with complementary role and accessibility info -->
+<footer role="contentinfo" aria-label="Footer information">
+    <p>© 2025 Alex Morgan — Built with <strong>semantic HTML5, WCAG 2.1 AA</strong> compliance, and inclusive design principles.</p>
+    <p style="margin-top: 0.7rem;">
+        <a href="#" aria-label="Accessibility statement (coming soon)">Accessibility statement</a> &nbsp;|&nbsp;
+        <a href="#" aria-label="GitHub repository">GitHub</a> &nbsp;|&nbsp;
+        <a href="#" aria-label="LinkedIn profile">LinkedIn</a>
+    </p>
+    <p style="font-size: 0.85rem;">Keyboard navigable · Screen reader optimized · 100% Lighthouse SEO & A11y ready</p>
+</footer>
+
+<!-- SIMPLE JAVASCRIPT for contact form validation + demo submission (accessible errors and live region) -->
+<script>
+    (function() {
+        const form = document.getElementById('accessible-contact-form');
+        const nameInput = document.getElementById('fullname');
+        const emailInput = document.getElementById('email');
+        const messageInput = document.getElementById('message');
+        
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
+        const messageError = document.getElementById('message-error');
+        const formStatus = document.getElementById('form-status');
+        
+        // helper to clear all errors
+        function clearErrors() {
+            nameError.style.display = 'none';
+            nameError.innerHTML = '';
+            emailError.style.display = 'none';
+            emailError.innerHTML = '';
+            messageError.style.display = 'none';
+            messageError.innerHTML = '';
+            if (formStatus) {
+                formStatus.style.display = 'none';
+                formStatus.innerHTML = '';
+                formStatus.setAttribute('role', 'status');
+            }
+            // remove aria-invalid from inputs
+            nameInput.setAttribute('aria-invalid', 'false');
+            emailInput.setAttribute('aria-invalid', 'false');
+            messageInput.setAttribute('aria-invalid', 'false');
+        }
+        
+        function showFieldError(fieldId, errorDiv, message) {
+            errorDiv.innerHTML = message;
+            errorDiv.style.display = 'block';
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.setAttribute('aria-invalid', 'true');
+                field.setAttribute('aria-describedby', field === nameInput ? 'name-error' : (field === emailInput ? 'email-error' : 'message-error'));
+            }
+        }
+        
+        function showFormStatus(message, isError = false) {
+            if (formStatus) {
+                formStatus.style.display = 'block';
+                formStatus.innerHTML = message;
+                if (isError) {
+                    formStatus.classList.add('error-message');
+                    formStatus.classList.remove('success-message');
+                    formStatus.setAttribute('role', 'alert');
+                } else {
+                    formStatus.classList.add('success-message');
+                    formStatus.classList.remove('error-message');
+                    formStatus.setAttribute('role', 'status');
+                }
+                // Force screen readers to announce
+                formStatus.focus();
+            }
+        }
+        
+        function validateForm() {
+            let isValid = true;
+            clearErrors();
+            
+            // Name validation
+            const nameValue = nameInput.value.trim();
+            if (nameValue === '') {
+                showFieldError('fullname', nameError, 'Name is required.');
+                isValid = false;
+            } else if (nameValue.length < 2) {
+                showFieldError('fullname', nameError, 'Please enter a valid full name (at least 2 characters).');
+                isValid = false;
+            } else {
+                nameInput.setAttribute('aria-invalid', 'false');
+            }
+            
+            // Email validation
+            const emailValue = emailInput.value.trim();
+            const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            if (emailValue === '') {
+                showFieldError('email', emailError, 'Email address is required.');
+                isValid = false;
+            } else if (!emailPattern.test(emailValue)) {
+                showFieldError('email', emailError, 'Please enter a valid email (e.g., name@domain.com).');
+                isValid = false;
+            } else {
+                emailInput.setAttribute('aria-invalid', 'false');
+            }
+            
+            // Message validation
+            const messageValue = messageInput.value.trim();
+            if (messageValue === '') {
+                showFieldError('message', messageError, 'Message cannot be empty.');
+                isValid = false;
+            } else if (messageValue.length < 5) {
+                showFieldError('message', messageError, 'Message must be at least 5 characters.');
+                isValid = false;
+            } else {
+                messageInput.setAttribute('aria-invalid', 'false');
+            }
+            
+            return isValid;
+        }
+        
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (validateForm()) {
+                // In a real implementation you would send data. We simulate success.
+                const formData = {
+                    name: nameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    message: messageInput.value.trim()
+                };
+                console.log('Form submitted (demo):', formData);
+                showFormStatus('✅ Message sent successfully! Thank you for reaching out. I will get back to you soon.', false);
+                // Optionally reset form but we keep values for demo; but you can reset
+                // form.reset();  // uncomment if you want reset after success
+                // Clear errors anyway
+                clearErrors();
+                // OPTIONAL: set aria-live and reset after 6 seconds? not necessary
+                setTimeout(() => {
+                    if (formStatus) {
+                        formStatus.style.display = 'none';
+                    }
+                }, 8000);
+            } else {
+                showFormStatus('Please fix the errors above before submitting.', true);
+                // Move focus to first error field for better keyboard UX
+                const firstInvalid = document.querySelector('[aria-invalid="true"]');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+            }
+        });
+        
+        // improve live region on input blur to provide inline errors with updated aria-describedby
+        function attachLiveValidation() {
+            const fields = [nameInput, emailInput, messageInput];
+            fields.forEach(field => {
+                field.addEventListener('blur', function() {
+                    // quick validation per field to update ARIA states
+                    if (field.id === 'fullname') {
+                        if (field.value.trim() === '') {
+                            field.setAttribute('aria-invalid', 'true');
+                            nameError.innerHTML = 'Name is required.';
+                            nameError.style.display = 'block';
+                        } else if (field.value.trim().length < 2) {
+                            field.setAttribute('aria-invalid', 'true');
+                            nameError.innerHTML = 'Enter valid name.';
+                            nameError.style.display = 'block';
+                        } else {
+                            field.setAttribute('aria-invalid', 'false');
+                            nameError.style.display = 'none';
+                        }
+                    }
+                    if (field.id === 'email') {
+                        const emailVal = field.value.trim();
+                        const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+                        if (emailVal === '') {
+                            field.setAttribute('aria-invalid', 'true');
+                            emailError.innerHTML = 'Email required.';
+                            emailError.style.display = 'block';
+                        } else if (!emailPattern.test(emailVal)) {
+                            field.setAttribute('aria-invalid', 'true');
+                            emailError.innerHTML = 'Valid email required.';
+                            emailError.style.display = 'block';
+                        } else {
+                            field.setAttribute('aria-invalid', 'false');
+                            emailError.style.display = 'none';
+                        }
+                    }
+                    if (field.id === 'message') {
+                        if (field.value.trim() === '') {
+                            field.setAttribute('aria-invalid', 'true');
+                            messageError.innerHTML = 'Message required.';
+                            messageError.style.display = 'block';
+                        } else if (field.value.trim().length < 5) {
+                            field.setAttribute('aria-invalid', 'true');
+                            messageError.innerHTML = 'Message too short.';
+                            messageError.style.display = 'block';
+                        } else {
+                            field.setAttribute('aria-invalid', 'false');
+                            messageError.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
+        attachLiveValidation();
+    })();
+</script>
+
+<!-- dummy resume.html reference: for multi-page completeness the second "resume.html" would be similar semantic skeleton -->
+<!-- but we ensure internal navigation uses consistent semantic structure -->
+</body>
+</html>
